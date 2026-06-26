@@ -1,0 +1,25 @@
+[package]
+name = "atmos-passport"
+version = "1.0.0"
+edition = "2021"
+authors = ["Atmos Protocol <team@atmos.xyz>"]
+description = "Atmos Carbon Passport — Casper smart contract for verified climate asset passports"
+
+[dependencies]
+casper-contract = "4.0.0"
+casper-types = "4.0.1"
+
+[features]
+default = ["casper-contract/std", "casper-types/std"]
+
+[[bin]]
+name = "atmos_passport"
+path = "src/main.rs"
+bench = false
+doctest = false
+test = false
+
+[profile.release]
+codegen-units = 1
+lto = true
+opt-level = "z"
