@@ -290,19 +290,10 @@ app.get('/api/deploy/:hash', async (req, res) => {
 });
 
 // ── Start Server ─────────────────────────────────────
-app.listen(PORT, () => {
-  logger.info(`
-╔═══════════════════════════════════════════════════════╗
-║                                                       ║
-║   ATMOS PROTOCOL — Carbon Intelligence Layer          ║
-║   Powered by Casper Network                           ║
-║                                                       ║
-║   Server:  http://localhost:${PORT}                     ║
-║   Health:  http://localhost:${PORT}/api/health           ║
-║   Verify:  POST http://localhost:${PORT}/api/verify      ║
-║                                                       ║
-╚═══════════════════════════════════════════════════════╝
-  `);
-});
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    logger.info(\`ATMOS API Server running on port \${PORT}\`);
+  });
+}
 
 export default app;
