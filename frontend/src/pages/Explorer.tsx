@@ -7,13 +7,49 @@ export default function Explorer() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/passports')
-      .then(res => res.json())
-      .then(data => {
-        setPassports(data);
-        setLoading(false);
-      })
-      .catch(console.error);
+    // Mock data for Vercel deployment without backend
+    setTimeout(() => {
+      const mockPassports = [
+        {
+          passportId: 'CASPER-8492A',
+          projectId: 'demo-1',
+          projectName: 'Rajasthan Solar Phase II',
+          entityType: 'solar_energy',
+          atmosScore: { grade: 'A', score: 92 },
+          verification: { co2eEstimated: 25000 }
+        },
+        {
+          passportId: 'CASPER-3910B',
+          projectId: 'demo-2',
+          projectName: 'Amazon Agroforestry Initiative',
+          entityType: 'agroforestry',
+          atmosScore: { grade: 'S', score: 98 },
+          verification: { co2eEstimated: 145000 }
+        }
+      ];
+
+      // Also grab any locally generated passports from localStorage
+      const localPassports = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('atmos_passport_')) {
+          try {
+            const data = JSON.parse(localStorage.getItem(key) || '');
+            localPassports.push({
+              passportId: 'CASPER-' + data.projectId.substring(5).toUpperCase(),
+              projectId: data.projectId,
+              projectName: data.projectName,
+              entityType: data.entityType,
+              atmosScore: { grade: data.grade === 3 ? 'A' : 'S', score: data.atmosScore },
+              verification: { co2eEstimated: data.co2eTonnesKg }
+            });
+          } catch(e){}
+        }
+      }
+
+      setPassports([...localPassports, ...mockPassports]);
+      setLoading(false);
+    }, 800);
   }, []);
 
   return (
