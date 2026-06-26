@@ -22,12 +22,15 @@ export default function AIAnalyst() {
     e.preventDefault();
     setLoading(true);
     
-    // Simulate steps for UI effect
-    setStep(1); // Satellite
+    setStep(1); // Call satellite
+    await new Promise(r => setTimeout(r, 1000));
+    setStep(2); // 402 Paywall hit
     await new Promise(r => setTimeout(r, 1500));
-    setStep(2); // AI Analysis
-    await new Promise(r => setTimeout(r, 1500));
-    setStep(3); // Casper Anchor
+    setStep(3); // Paid
+    await new Promise(r => setTimeout(r, 1000));
+    setStep(4); // AI Analysis
+    await new Promise(r => setTimeout(r, 2000));
+    setStep(5); // Casper Anchor
 
     try {
       const res = await fetch('/api/verify', {
@@ -134,14 +137,29 @@ export default function AIAnalyst() {
                 <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: step >= 1 ? 'var(--g1)' : 'var(--muted)', opacity: step >= 1 ? 1 : 0.5 }}>
                     {step > 1 ? <CheckCircle size={20} /> : <Loader size={20} className={step === 1 ? 'animate-pulse-glow' : ''} />}
-                    <span className="mono" style={{ fontSize: '13px' }}>1. Fetching Sentinel-2 Satellite Data...</span>
+                    <span className="mono" style={{ fontSize: '13px' }}>1. Agent: Requesting Sentinel-2 Satellite Data...</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: step >= 2 ? 'var(--g1)' : 'var(--muted)', opacity: step >= 2 ? 1 : 0.5 }}>
-                    {step > 2 ? <CheckCircle size={20} /> : <Loader size={20} className={step === 2 ? 'animate-pulse-glow' : ''} />}
+                  
+                  {step >= 2 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--red)', opacity: step >= 2 ? 1 : 0.5 }}>
+                      <span className="badge badge-mono badge-red" style={{ fontSize: '10px' }}>HTTP 402</span>
+                      <span className="mono" style={{ fontSize: '13px' }}>Payment Required: 0.003 CSPR (x402 Protocol)</span>
+                    </div>
+                  )}
+
+                  {step >= 3 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: 'var(--g1)' }}>
+                      <CheckCircle size={20} />
+                      <span className="mono" style={{ fontSize: '13px' }}>Agent: Paid 0.003 CSPR. Payload received.</span>
+                    </div>
+                  )}
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: step >= 4 ? 'var(--g1)' : 'var(--muted)', opacity: step >= 4 ? 1 : 0.5 }}>
+                    {step > 4 ? <CheckCircle size={20} /> : <Loader size={20} className={step === 4 ? 'animate-pulse-glow' : ''} />}
                     <span className="mono" style={{ fontSize: '13px' }}>2. Running AI Verification & Atmos Score...</span>
                   </div>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: step >= 3 ? 'var(--g1)' : 'var(--muted)', opacity: step >= 3 ? 1 : 0.5 }}>
-                    {step > 3 ? <CheckCircle size={20} /> : <Loader size={20} className={step === 3 ? 'animate-pulse-glow' : ''} />}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', color: step >= 5 ? 'var(--g1)' : 'var(--muted)', opacity: step >= 5 ? 1 : 0.5 }}>
+                    {step > 5 ? <CheckCircle size={20} /> : <Loader size={20} className={step === 5 ? 'animate-pulse-glow' : ''} />}
                     <span className="mono" style={{ fontSize: '13px' }}>3. Anchoring Passport on Casper Blockchain...</span>
                   </div>
                 </div>

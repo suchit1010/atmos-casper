@@ -5,6 +5,7 @@ import Dashboard from './pages/Dashboard';
 import AIAnalyst from './pages/AIAnalyst';
 import PassportViewer from './pages/PassportViewer';
 import Explorer from './pages/Explorer';
+import AgentMCP from './pages/AgentMCP';
 
 function App() {
   const location = useLocation();
@@ -30,6 +31,7 @@ function App() {
           <Link to="/" className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}>Dashboard</Link>
           <Link to="/analyst" className={`nav-link ${location.pathname === '/analyst' ? 'active' : ''}`}>AI Analyst</Link>
           <Link to="/explorer" className={`nav-link ${location.pathname === '/explorer' ? 'active' : ''}`}>Explorer</Link>
+          <Link to="/agent-mcp" className={`nav-link ${location.pathname === '/agent-mcp' ? 'active' : ''}`}>Agent MCP</Link>
         </div>
 
         <div style={{ display: 'flex', gap: '12px' }}>
@@ -45,6 +47,7 @@ function App() {
           <Route path="/analyst" element={<AIAnalyst />} />
           <Route path="/passport/:id" element={<PassportViewer />} />
           <Route path="/explorer" element={<Explorer />} />
+          <Route path="/agent-mcp" element={<AgentMCP />} />
         </Routes>
       </main>
     </>
