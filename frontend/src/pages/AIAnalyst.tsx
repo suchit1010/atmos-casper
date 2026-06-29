@@ -33,35 +33,30 @@ export default function AIAnalyst() {
     setStep(5); // Casper Anchor
 
     try {
-      // Simulate backend API delay
-      await new Promise(r => setTimeout(r, 1000));
-      
-      const mockProjectId = 'proj_' + Math.random().toString(36).substring(2, 9);
-      
-      // Store mock passport data in localStorage so PassportViewer can read it
-      const mockPassport = {
-        projectId: mockProjectId,
-        projectName: formData.projectName,
-        entityType: formData.entityType,
-        atmosScore: 92,
-        grade: 3, // Grade A
-        co2eTonnesKg: formData.areaHa * 12500, 
-        methodology: formData.entityType === 'solar_energy' ? 'ACM0002' : 'VM0044',
-        vintageYear: new Date().getFullYear(),
-        casperDeployHash: Array.from({length: 48}, () => Math.floor(Math.random()*16).toString(16)).join('') + '-demo-mock',
-        verificationData: {
-          confidenceScore: 95,
-          fraudRiskScore: 2,
-          fraudRisk: 'low',
-          fraudSignals: ['No satellite anomalies', 'Metadata consistency high'],
-          methodologyMatch: 98,
-          analysisSummary: \`AI cross-verification complete. Project claims align with Sentinel-2 satellite observation. No anomalies detected.\`
-        }
-      };
-      
-      localStorage.setItem(\`atmos_passport_\${mockProjectId}\`, JSON.stringify(mockPassport));
-      
-      navigate(\`/passport/\${mockProjectId}\`);
+      const res = await fetch('/api/verify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          projectName: formData.projectName,
+          entityType: formData.entityType,
+          lat: formData.lat,
+          lng: formData.lng,
+          areaHa: formData.areaHa,
+          metadata: {
+            biocharYieldTonnes: formData.biocharYieldTonnes,
+            capacityKw: formData.capacityKw,
+            capacityFactor: formData.capacityFactor
+          }
+        })
+      });
+
+      const data = await res.json();
+      if (data.success && data.passport) {
+        navigate(\`/passport/\${data.passport.projectId}\`);
+      } else {
+        alert('Verification failed: ' + (data.error || 'Unknown error'));
+        setLoading(false);
+      }
     } catch (err) {
       console.error(err);
       alert('Network error');
